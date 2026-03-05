@@ -7,13 +7,14 @@ namespace Organizador
     public partial class Form1 : Form
     {
 
-        private IconButton currentBtn;
+        private IconButton? currentBtn;
         private Panel leftBorderBtn;
-        private Form currentChildForm;
+        private Form? currentChildForm;
 
         public Form1()
         {
             InitializeComponent();
+            this.Load += Form1_Load;
 
             leftBorderBtn = new Panel();
             leftBorderBtn.Size = new Size(7, 60);
@@ -92,7 +93,8 @@ namespace Organizador
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+           // var mesas = DatabaseManager.ObtenerMesas();
+            //MessageBox.Show("Mesas encontradas: " + mesas.Count); PRUEBA DE BASE DE DATOS
         }
 
         private void iconButton1_Click(object sender, EventArgs e)
@@ -120,7 +122,7 @@ namespace Organizador
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            currentChildForm.Close();
+            currentChildForm?.Close();
             Reset();
         }
 
