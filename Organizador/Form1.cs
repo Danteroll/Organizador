@@ -93,8 +93,8 @@ namespace Organizador
 
         private void Form1_Load(object sender, EventArgs e)
         {
-           // var mesas = DatabaseManager.ObtenerMesas();
-            //MessageBox.Show("Mesas encontradas: " + mesas.Count); PRUEBA DE BASE DE DATOS
+            //var mesas = DatabaseManager.ObtenerMesas();
+            //MessageBox.Show("Mesas encontradas: " + mesas.Count);  
         }
 
         private void iconButton1_Click(object sender, EventArgs e)
