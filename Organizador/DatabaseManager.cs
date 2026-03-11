@@ -74,8 +74,6 @@ namespace Organizador
             }
             else
             {
-                // Borrar sobrantes (primero las mesas con NumeroMesa más alto)
-                // OJO: ON DELETE CASCADE borra asignaciones de esas mesas.
                 var del = connection.CreateCommand();
                 del.CommandText = @"DELETE FROM Mesas
                             WHERE NumeroMesa > @max;";
@@ -191,5 +189,63 @@ namespace Organizador
 
             return mesas;
         }
+
+        public static void AgregarInvitado(string nombre, string telefono, string alergias, string grupo)
+        {
+            using var conn = GetConnection();
+
+            string sql = @"INSERT INTO Invitados (Nombre, Telefono, Alergias, Grupo)
+                   VALUES (@nombre, @telefono, @alergias, @grupo)";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@nombre", nombre);
+            cmd.Parameters.AddWithValue("@telefono", (object)telefono ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@alergias", (object)alergias ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@grupo", (object)grupo ?? DBNull.Value);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        private static string connectionString = "Data Source=./Data/eventos.db";
+
+        public static List<Invitado> ObtenerInvitados()
+        {
+            List<Invitado> lista = new List<Invitado>();
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT Id, Nombre, Telefono, Alergias, Grupo FROM Invitados";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lista.Add(new Invitado
+                        {
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Telefono = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                            Alergias = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                            Grupo = reader.IsDBNull(4) ? "" : reader.GetString(4)
+                        });
+                    }
+                }
+            }
+            return lista;
+        }
+
+        public static void EliminarInvitado(int id)
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "DELETE FROM Invitados WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
     }
 }
