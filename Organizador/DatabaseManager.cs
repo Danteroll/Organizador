@@ -247,5 +247,30 @@ namespace Organizador
             }
         }
 
+        public static void ActualizarInvitado(int id, string nombre, string telefono, string alergias, string grupo)
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+            UPDATE Invitados 
+            SET Nombre = @nombre, 
+                Telefono = @telefono, 
+                Alergias = @alergias, 
+                Grupo = @grupo 
+            WHERE Id = @id";
+
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@nombre", nombre);
+                command.Parameters.AddWithValue("@telefono", telefono);
+                command.Parameters.AddWithValue("@alergias", alergias);
+                command.Parameters.AddWithValue("@grupo", grupo);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
+
 }

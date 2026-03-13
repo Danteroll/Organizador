@@ -127,5 +127,55 @@ namespace Organizador.Forms
                 MessageBox.Show("Por favor, selecciona la fila completa del invitado que quieres borrar.");
             }
         }
+
+        private void btnEditarInv_Click(object sender, EventArgs e)
+        {
+            if (dgvInvitados.SelectedRows.Count > 0)
+            {
+                try
+                {
+                    int id = Convert.ToInt32(dgvInvitados.SelectedRows[0].Cells["Id"].Value);
+
+                    // Ejecutar la actualización en la BD
+                    DatabaseManager.ActualizarInvitado(
+                        id,
+                        textBox1.Text.Trim(),
+                        textBox3.Text.Trim(),
+                        textBox4.Text.Trim(),
+                        textBox5.Text.Trim()
+                    );
+
+                    // IMPORTANTE: Refrescar la fuente de datos correctamente
+                    CargarDatosInvitados();
+                    LimpiarCampos();
+
+                    MessageBox.Show("Cambios guardados. La tabla se ha actualizado.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al actualizar: " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecciona una fila completa antes de presionar Editar.");
+            }
+        }
+
+        private void dgvInvitados_SelectionChanged(object sender, EventArgs e)
+        {
+            // Verificamos que haya una fila seleccionada y que no sea la fila vacía
+            if (dgvInvitados.SelectedRows.Count > 0)
+            {
+                DataGridViewRow fila = dgvInvitados.SelectedRows[0];
+
+                // Llenamos los TextBox con los datos de la fila
+                // Usamos ?.ToString() para evitar errores si alguna celda está vacía
+                textBox1.Text = fila.Cells["Nombre"].Value?.ToString();
+                textBox3.Text = fila.Cells["Telefono"].Value?.ToString();
+                textBox4.Text = fila.Cells["Alergias"].Value?.ToString();
+                textBox5.Text = fila.Cells["Grupo"].Value?.ToString();
+            }
+        }
     }
 }
